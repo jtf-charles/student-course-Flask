@@ -92,3 +92,109 @@ student-course-tracker/
 ├── Pipfile                    # Dépendances Python
 ├── README.md                  # Documentation
 └── LICENSE.md                 # Licence MIT
+
+
+
+## 🗄️ Backend – Flask API
+
+### ⚙️ Technologies utilisées
+- **Flask**
+- **Flask-RESTful**
+- **Flask-Migrate**
+- **SQLAlchemy ORM**
+- **SQLite** (par défaut, mais facilement extensible vers PostgreSQL)
+
+---
+
+### 🔗 Endpoints principaux
+
+| Ressource | Méthode | URL | Description |
+|------------|----------|-----|-------------|
+| **Courses** | `GET` | `/api/courses` | Liste de tous les cours |
+| **Courses** | `POST` | `/api/courses` | Créer un nouveau cours |
+| **Courses** | `PATCH` | `/api/courses/<id>` | Modifier un cours existant |
+| **Courses** | `DELETE` | `/api/courses/<id>` | Supprimer un cours |
+| **Students** | `GET` | `/api/students` | Liste de tous les étudiants |
+| **Students** | `POST` | `/api/students` | Ajouter un nouvel étudiant |
+| **Students** | `PATCH` | `/api/students/<id>` | Modifier un étudiant |
+| **Students** | `DELETE` | `/api/students/<id>` | Supprimer un étudiant |
+| **Enrollments** | `POST` | `/api/enrollments` | Inscrire un étudiant à un cours |
+| **Enrollments** | `PATCH` | `/api/enrollments/<id>` | Modifier une note |
+| **Enrollments** | `DELETE` | `/api/enrollments/<id>` | Supprimer une inscription |
+
+---
+
+### 💾 Exemple de modèle SQLAlchemy
+
+```python
+class Course(db.Model):
+    __tablename__ = 'courses'
+    
+    id = db.Column(db.Integer, primary_key=True)
+    title = db.Column(db.String(120), nullable=False)
+    duration = db.Column(db.Integer, nullable=False)
+    level = db.Column(db.String(50), nullable=False)
+    instructor_id = db.Column(db.Integer, db.ForeignKey('instructors.id'))
+
+    instructor = db.relationship('Instructor', back_populates='courses')
+    enrollments = db.relationship('Enrollment', back_populates='course')
+
+    def to_dict(self):
+        return {
+            "id": self.id,
+            "title": self.title,
+            "duration": self.duration,
+            "level": self.level,
+            "instructor": self.instructor.name if self.instructor else None
+        }
+
+
+
+
+
+
+
+
+## 🚀 Installation & Lancement du projet
+
+Cette section décrit pas à pas comment installer et exécuter le projet **Student Course Tracker** en local.  
+Le projet combine un **backend Flask (API)** et un **frontend React** interconnectés.
+
+---
+
+### 💼 Prérequis
+
+Avant de commencer, assurez-vous d’avoir installé :
+
+- 🐍 **Python ≥ 3.10**
+- ⚙️ **Node.js ≥ 18**
+- 📦 **Pipenv** ou **virtualenv**
+- 🌐 **npm** (installé automatiquement avec Node.js)
+
+---
+
+### 1️⃣ Cloner le projet
+
+Ouvrez votre terminal et exécutez :
+
+```bash
+git clone https://github.com/jtf-charles/student-course-flask.git
+cd student-course-flask
+
+
+
+### 🧪 Exemple complet d’exécution
+
+```bash
+# Étape 1 - Backend
+cd server
+pipenv install
+pipenv shell
+flask db upgrade
+python seed.py
+flask run
+
+# Étape 2 - Frontend
+cd ../client
+npm install
+npm start
